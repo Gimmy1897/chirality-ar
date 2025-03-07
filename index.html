@@ -1,8 +1,22 @@
-<html>
-  <body>
-  <script>
-    const queryString = window.location.search;
-    window.location.replace('intent://arvr.google.com/scene-viewer/1.0?file=https://gimmy1897.github.io/chirality-ar/models/${queryString}.glb#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;end;');
-  </script>
-    </body>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script>
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const model = params.get("model");
+            if (model) {
+                const url = `intent://arvr.google.com/scene-viewer/1.0?file=https://gimmy1897.github.io/chirality-ar/models/${model}.glb?raw=true#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;end;`;
+                window.location.href = url;
+            } else {
+                document.body.innerHTML = "<h1>Errore: parametro 'model' mancante!</h1>";
+            }
+        };
+    </script>
+</head>
+<body>
+</body>
 </html>
