@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modello proteina 4ALD</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #888888; }
+        canvas { display: block; }
+
+        /* Style per il pulsante Credits */
+        #credits-button {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            bottom: 20px;
+        }
+
+        /* Style per il dialogo */
+        #credits-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            z-index: 10;
+            width: 300px;
+            text-align: center;
+        }
+
+        #credits-dialog button {
+            background-color: #ccc;
+            color: black;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #credits-dialog button:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <button id="credits-button">Credits</button>
+
+    <!-- Dialogo dei crediti -->
+    <div id="credits-dialog">
+        <h3>Credits</h3>
+        <p>3D Model from the RCSB PDB (RCSB.org) of PDB ID 4ALD</p>
+        <p>HUMAN MUSCLE FRUCTOSE 1,6-BISPHOSPHATE ALDOLASE COMPLEXED WITH FRUCTOSE 1,6-BISPHOSPHATE</p>
+        <p>Dalby, A.R., Dauter, Z., Littlechild, J.A.; 1999</p>
+        <p>https://doi.org/10.2210/pdb4ald/pdb</p>
+        <p>Licensed under CC0 1.0 Universal</p>
+        <button id="close-credits">Close</button>
+    </div>
+
+    <script>
+        let scene, camera, renderer, model, controls, light;
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x888888);
+            
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.body.appendChild(renderer.domElement);
+            
+            camera.position.set(-0.65, -2.03, -2.07);
+
+            
+            light = new THREE.HemisphereLight(0xffffff, 0x444444, 1); 
+            light.position.copy(camera.position);
+            scene.add(light);
+            
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 1;
+            controls.maxDistance = 10;
+            controls.maxPolarAngle = Math.PI;
+            controls.minPolarAngle = 0;
+            controls.enableRotate = true;
+
+            loadDefaultModel();
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            light.position.copy(camera.position);
+            renderer.render(scene, camera);
+        }
+
+        function loadDefaultModel() {
+            const loader = new THREE.GLTFLoader();
+            loader.load('/models/4ALD.glb', function(gltf) {
+                model = gltf.scene;
+                let box = new THREE.Box3().setFromObject(model);
+                let size = box.getSize(new THREE.Vector3());
+                let scaleFactor = 2 / Math.max(size.x, size.y, size.z);
+                model.scale.set(scaleFactor, scaleFactor, scaleFactor);
+                scene.add(model);
+            }, undefined, function(error) {
+                console.error('Errore nel caricamento del modello:', error);
+            });
+        }
+
+        window.addEventListener('resize', function() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+        });
+
+        // Mostra il dialogo dei crediti quando il pulsante è cliccato
+        document.getElementById('credits-button').addEventListener('click', function() {
+            document.getElementById('credits-dialog').style.display = 'block';
+        });
+
+        // Chiudi il dialogo quando il pulsante "Close" viene cliccato
+        document.getElementById('close-credits').addEventListener('click', function() {
+            document.getElementById('credits-dialog').style.display = 'none';
+        });
+
+        init();
+    </script>
+</body>
+</html>
