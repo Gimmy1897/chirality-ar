@@ -70,7 +70,7 @@
     </div>
 
     <script>
-        let scene, camera, renderer, model, controls, light;
+        let scene, camera, renderer, model, controls, light, mixer;
 
         function init() {
             scene = new THREE.Scene();
@@ -111,6 +111,9 @@
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
+            if (mixer) {
+                mixer.update(0.01);  // Passa il deltaTime per aggiornare l'animazione
+            }
             renderer.render(scene, camera);
         }
 
@@ -123,6 +126,12 @@
                 let scaleFactor = 2 / Math.max(size.x, size.y, size.z);
                 model.scale.set(scaleFactor, scaleFactor, scaleFactor);
                 scene.add(model);
+                if (gltf.animations && gltf.animations.length) {
+                mixer = new THREE.AnimationMixer(model);
+                gltf.animations.forEach((clip) => {
+                mixer.clipAction(clip).play();
+                    });
+                }
             }, undefined, function(error) {
                 console.error('Errore nel caricamento del modello:', error);
             });
