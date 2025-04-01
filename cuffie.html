@@ -110,6 +110,10 @@
 
         function animate() {
             requestAnimationFrame(animate);
+            // Ruota lentamente il modello
+            if (model) {
+                model.rotation.y += 0.001; // Ruotare lungo l'asse Y
+            }
             controls.update();
             renderer.render(scene, camera);
         }
