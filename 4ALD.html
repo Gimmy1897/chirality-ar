@@ -113,7 +113,7 @@
 
         function loadDefaultModel() {
             const loader = new THREE.GLTFLoader();
-            loader.load('/models/4ALD.glb', function(gltf) {
+            loader.load('models/4ALD.glb', function(gltf) {
                 model = gltf.scene;
                 let box = new THREE.Box3().setFromObject(model);
                 let size = box.getSize(new THREE.Vector3());
