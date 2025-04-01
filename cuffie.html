@@ -80,14 +80,19 @@
             renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.toneMapping = THREE.ACESFilmicToneMapping; // Tipo di mappatura del tono
+            renderer.toneMappingExposure = 0.5;
             document.body.appendChild(renderer.domElement);
             
-            camera.position.set(-1.53, 1.82, 1.77);
+            camera.position.set(-1.24, 2.06, 1.94);
 
-            
-            light = new THREE.HemisphereLight(0xffffff, 0x444444, 0.5); 
-            light.position.copy(camera.position);
+            light = new THREE.AmbientLight(0xffffff, 0.4);
+            light.position.set(3, 5, 2);
             scene.add(light);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+
             
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
@@ -106,13 +111,12 @@
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
-            light.position.copy(camera.position);
             renderer.render(scene, camera);
         }
 
         function loadDefaultModel() {
             const loader = new THREE.GLTFLoader();
-            loader.load('models/cuffie.glb', function(gltf) {
+            loader.load('cuffie.glb', function(gltf) {
                 model = gltf.scene;
                 let box = new THREE.Box3().setFromObject(model);
                 let size = box.getSize(new THREE.Vector3());
