@@ -65,7 +65,7 @@
         <p>3D Model from sketchfab.com</p>
         <p>Michael Aristovo</p>
         <p>https://skfb.ly/6TJsW</p>
-        <p>CC BY 4.0l</p>
+        <p>CC BY-SA 4.0</p>
         <button id="close-credits">Close</button>
     </div>
 
@@ -112,7 +112,7 @@
             requestAnimationFrame(animate);
             controls.update();
             if (mixer) {
-                mixer.update(0.01);  // Passa il deltaTime per aggiornare l'animazione
+                mixer.update(0.03);  // Passa il deltaTime per aggiornare l'animazione
             }
             renderer.render(scene, camera);
         }
